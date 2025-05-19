@@ -11,7 +11,7 @@ const BlogPage = () => {
   
   // Update page title
   useEffect(() => {
-    document.title = 'Blog | Youcef Miel';
+    document.title = 'Blog | les fruits de la nature';
   }, []);
   
   // Initial load of all blog posts

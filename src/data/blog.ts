@@ -1,4 +1,6 @@
 import { BlogPost } from '../types/product';
+import benifits from './benifits.jpg';
+import img from './2.jpg';
 
 export const blogPosts: BlogPost[] = [
   {
@@ -52,7 +54,7 @@ export const blogPosts: BlogPost[] = [
 
       Remember, to obtain the full health benefits, it\'s essential to use raw, unprocessed honey from trusted sources. Youcef Miel guarantees 100% pure Algerian mountain honey, carefully harvested to preserve all its natural goodness.
     `,
-    coverImage: 'https://images.pexels.com/photos/139398/honey-honey-bee-bees-honeycomb-139398.jpeg',
+    coverImage: benifits,
     author: 'Dr. Karima Benali',
     date: '2023-07-15',
     category: 'Health',
@@ -177,84 +179,12 @@ export const blogPosts: BlogPost[] = [
 
       Enjoy exploring these traditional recipes, and don\'t hesitate to adapt them to your taste preferences!
     `,
-    coverImage: 'https://images.pexels.com/photos/4916561/pexels-photo-4916561.jpeg',
+    coverImage: img,
     author: 'Fatima Zerrouki',
     date: '2023-08-22',
     category: 'Recipes',
     tags: ['recipes', 'traditional', 'cuisine', 'algerian food']
   },
-  {
-    id: '3',
-    title: 'The Art of Beekeeping in Algeria: From Tradition to Modern Practices',
-    slug: 'beekeeping-algeria-tradition-modern',
-    excerpt: 'Learn about the rich history of beekeeping in Algeria and how traditional methods blend with modern techniques.',
-    content: `
-      # The Art of Beekeeping in Algeria: From Tradition to Modern Practices
-
-      Beekeeping in Algeria has a rich history dating back centuries, with techniques passed down through generations. Today, Algerian beekeepers blend traditional wisdom with modern innovations to produce some of the finest honey in North Africa.
-
-      ## Ancient Roots
-
-      Archaeological evidence suggests beekeeping in North Africa dates back to ancient times. Traditional Algerian beekeeping used clay pots or hollowed cork oak trunks as hives, placed horizontally in stone walls or under tree branches.
-
-      These methods, still practiced in some rural areas, create a sustainable relationship between beekeeper and bees, allowing for harvesting without destroying the colony.
-
-      ## Regional Beekeeping Traditions
-
-      Algeria\'s diverse geography creates distinct beekeeping traditions across regions:
-
-      **Atlas Mountains:** Beekeepers here often practice transhumance, moving hives seasonally to follow flowering plants from the valleys to higher elevations. This creates the distinctive mountain honey varieties prized for their medicinal properties.
-
-      **Kabylie Region:** Known for bee-friendly forests of cork oak, eucalyptus, and wild herbs, beekeepers here have developed techniques to protect bees from the intense summer heat.
-
-      **Southern Oases:** In the Saharan regions, beekeeping focuses around date palm oases, producing rare honey varieties from desert-adapted flowering plants.
-
-      ## The Transition to Modern Methods
-
-      Since the mid-20th century, Algerian beekeeping has increasingly adopted Langstroth hives and other modern equipment. Government programs have supported this modernization while preserving valuable traditional knowledge.
-
-      Modern Algerian beekeepers now use:
-
-      - Movable frame hives for better hive management
-      - Queen excluders to control breeding
-      - Mechanical extractors for more efficient harvesting
-      - Scientific breeding techniques to develop resilient bee colonies
-
-      ## Challenges and Innovations
-
-      Today\'s Algerian beekeepers face challenges including:
-
-      1. **Climate change** affecting flowering patterns and water availability
-      2. **Pesticide use** in agricultural areas
-      3. **Bee diseases** spreading globally
-      4. **Market competition** from imported honey
-
-      In response, innovative beekeepers are:
-
-      - Creating bee sanctuaries in pesticide-free zones
-      - Developing organic treatment methods for common bee diseases
-      - Establishing cooperatives to share knowledge and resources
-      - Building recognition for distinctive Algerian honey varieties
-
-      ## Youcef Miel: Blending Tradition and Innovation
-
-      At Youcef Miel, we honor traditional beekeeping wisdom while embracing sustainable modern practices. Our approach includes:
-
-      - Working with small-scale beekeepers who maintain traditional knowledge
-      - Using modern testing to ensure consistent quality and purity
-      - Practicing ethical harvesting that prioritizes bee health
-      - Educating consumers about the unique qualities of each honey variety
-
-      By respecting both heritage and innovation, we ensure that Algerian beekeeping traditions continue to thrive while producing the exceptional honey our customers love.
-
-      Visit our About Us page to learn more about our beekeeping practices and commitment to sustainability.
-    `,
-    coverImage: 'https://images.pexels.com/photos/12389995/pexels-photo-12389995.jpeg',
-    author: 'Mohammed Amrani',
-    date: '2023-09-10',
-    category: 'Beekeeping',
-    tags: ['beekeeping', 'tradition', 'sustainability', 'algerian heritage']
-  }
 ];
 
 export const getRecentBlogPosts = (count: number = 3): BlogPost[] => {

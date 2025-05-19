@@ -12,7 +12,7 @@ const Logo = ({ className = 'h-12 w-auto', dark = false }: LogoProps) => {
         <Feather className="text-white" size={24} />
       </div>
       <div className={`font-playfair font-bold text-2xl ${dark ? 'text-white' : 'text-brown-800'}`}>
-        Youcef Miel
+        les fruits de la nature 
       </div>
     </div>
   );

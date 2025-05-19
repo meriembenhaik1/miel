@@ -15,7 +15,7 @@ const ContactPage = () => {
   
   // Update page title
   useEffect(() => {
-    document.title = 'Contact Us | Youcef Miel';
+    document.title = 'Contact Us | les fruits de la nature';
   }, []);
   
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -102,8 +102,7 @@ const ContactPage = () => {
                     <div>
                       <h3 className="font-medium text-brown-800 mb-1">Email Address</h3>
                       <p className="text-gray-600">
-                        info@youcefmiel.com<br />
-                        support@youcefmiel.com
+                        info@lesfruitsdelanature.com<br />
                       </p>
                     </div>
                   </div>

@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import Button from '../ui/Button';
+import his from './his.jpg';
 
 const AboutSection = () => {
   return (
@@ -10,10 +11,10 @@ const AboutSection = () => {
             <div className="relative">
               <div className="rounded-lg overflow-hidden shadow-lg">
                 <img 
-                  src="https://images.pexels.com/photos/7553748/pexels-photo-7553748.jpeg" 
-                  alt="Beekeeper in Algeria" 
-                  className="w-full h-auto lg:h-[500px] object-cover"
-                />
+  src={his} 
+  alt="Beekeeper in Algeria" 
+  className="w-full h-auto lg:h-[500px] object-cover"
+/>
               </div>
               <div className="absolute -bottom-8 -right-8 md:bottom-auto md:-top-8 md:-right-8 p-6 bg-honey-500 rounded-lg shadow-lg max-w-[250px] hidden md:block">
                 <p className="text-white font-playfair text-lg italic">
