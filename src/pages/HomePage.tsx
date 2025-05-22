@@ -23,7 +23,7 @@ const HomePage = () => {
       <AlgerianMap />
       <Testimonials />
       <FeaturedBlogs />
-      <Newsletter />
+      
     </>
   );
 };
