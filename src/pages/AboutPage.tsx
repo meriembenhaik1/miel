@@ -50,16 +50,12 @@ const AboutPage = () => {
             
             <div>
               <div className="relative">
-                <img 
-                  src="https://images.pexels.com/photos/6956589/pexels-photo-6956589.jpeg" 
-                  alt="Traditional Honey Harvesting" 
-                  className="rounded-lg shadow-xl"
-                />
+      
                 <div className="absolute -bottom-6 -right-6 bg-cream-100 p-4 rounded-lg shadow-lg max-w-xs hidden md:block">
                   <p className="italic text-brown-800">
                     "Beekeeping is not just about honey production; it's about preserving our connection to nature and our heritage."
                   </p>
-                  <p className="text-honey-600 mt-2 font-semibold">— Youcef Benali, Founder</p>
+                  <p className="text-honey-600 mt-2 font-semibold">— Youcef Neffah, Founder</p>
                 </div>
               </div>
             </div>
@@ -230,65 +226,7 @@ const AboutPage = () => {
         </div>
       </section>
       
-      {/* Our Team */}
-      <section className="section bg-cream-50">
-        <div className="container">
-          <div className="section-title">
-            <h2 className="text-brown-800">Meet Our Team</h2>
-            <p className="mt-4 text-gray-600 max-w-2xl mx-auto">
-              The passionate people behind Youcef Miel who work tirelessly to bring 
-              you the finest honey Algeria has to offer.
-            </p>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-12">
-            <div className="bg-white rounded-lg overflow-hidden shadow-md">
-              <img 
-                src="https://images.pexels.com/photos/1681010/pexels-photo-1681010.jpeg" 
-                alt="Youcef Benali - Founder" 
-                className="w-full h-64 object-cover"
-              />
-              <div className="p-6">
-                <h3 className="text-xl font-semibold text-brown-800">Youcef Benali</h3>
-                <p className="text-honey-600 mb-3">Founder & Master Beekeeper</p>
-                <p className="text-gray-600">
-                  A third-generation beekeeper with a passion for preserving Algeria's honey traditions while creating a sustainable business.
-                </p>
-              </div>
-            </div>
-            
-            <div className="bg-white rounded-lg overflow-hidden shadow-md">
-              <img 
-                src="https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg" 
-                alt="Leila Hadad - Quality Control" 
-                className="w-full h-64 object-cover"
-              />
-              <div className="p-6">
-                <h3 className="text-xl font-semibold text-brown-800">Leila Hadad</h3>
-                <p className="text-honey-600 mb-3">Quality Control Specialist</p>
-                <p className="text-gray-600">
-                  With a background in food science, Leila ensures that every batch of honey meets our rigorous quality standards.
-                </p>
-              </div>
-            </div>
-            
-            <div className="bg-white rounded-lg overflow-hidden shadow-md">
-              <img 
-                src="https://images.pexels.com/photos/1516680/pexels-photo-1516680.jpeg" 
-                alt="Mohammed Cherif - Operations Manager" 
-                className="w-full h-64 object-cover"
-              />
-              <div className="p-6">
-                <h3 className="text-xl font-semibold text-brown-800">Mohammed Cherif</h3>
-                <p className="text-honey-600 mb-3">Operations Manager</p>
-                <p className="text-gray-600">
-                  Mohammed oversees our distribution network, ensuring smooth delivery of our honey to all 58 wilayas.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      
       
       {/* CTA Section */}
       <section className="section bg-honey-500 text-white">
