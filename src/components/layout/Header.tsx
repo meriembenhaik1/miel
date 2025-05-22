@@ -49,7 +49,7 @@ const Header = () => {
           <div className="flex items-center space-x-4">
             <Link to="/about" className="text-brown-700 hover:text-honey-600 transition-colors">About Us</Link>
             <Link to="/blog" className="text-brown-700 hover:text-honey-600 transition-colors">Blog</Link>
-            <Link to="/contact" className="text-brown-700 hover:text-honey-600 transition-colors">Contact</Link>
+            
           </div>
         </div>
 
@@ -81,10 +81,10 @@ const Header = () => {
             }>
               Blog
             </NavLink>
-            <NavLink to="/contact" className={({ isActive }) => 
+            <NavLink to="" className={({ isActive }) => 
               `nav-link ${isActive ? 'nav-link-active' : ''}`
             }>
-              Contact
+      
             </NavLink>
           </nav>
 
@@ -138,10 +138,10 @@ const Header = () => {
           }>
             Blog
           </NavLink>
-          <NavLink to="/contact" className={({ isActive }) => 
+          <NavLink to="" className={({ isActive }) => 
             `py-2 text-lg ${isActive ? 'text-honey-600 font-medium' : 'text-brown-800'}`
           }>
-            Contact
+            
           </NavLink>
           <div className="pt-2 flex items-center text-brown-700">
             <div className="flex items-center mr-6">

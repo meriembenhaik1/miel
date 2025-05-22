@@ -22,6 +22,10 @@ const CheckoutPage = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [orderComplete, setOrderComplete] = useState(false);
   const [orderNumber, setOrderNumber] = useState('');
+  const [submitError, setSubmitError] = useState('');
+  
+  // URL de votre Google Apps Script
+  const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwDIlxuE66yKPL9MNs9CslkN4OWHfYKOJ06QTlx0Wswu_pJYLy3h-v0ungTTaB91u7z/exec';
   
   // Form state
   const [formState, setFormState] = useState<FormState>({
@@ -53,19 +57,110 @@ const CheckoutPage = () => {
     setFormState(prev => ({ ...prev, [name]: value }));
   };
   
-  const handleSubmit = (e: React.FormEvent) => {
+  const submitOrderToGoogleSheet = async (orderData: any) => {
+    try {
+      // Créer les données au format URL-encoded (comme attendu par votre script)
+      const params = new URLSearchParams();
+      
+      // Ajouter toutes les données de la commande
+      params.append('orderNumber', orderData.orderNumber);
+      params.append('firstName', orderData.customerInfo.firstName);
+      params.append('lastName', orderData.customerInfo.lastName);
+      params.append('email', orderData.customerInfo.email);
+      params.append('phone', orderData.customerInfo.phone);
+      params.append('address', orderData.customerInfo.address);
+      params.append('city', orderData.customerInfo.city);
+      params.append('wilaya', orderData.customerInfo.wilaya);
+      params.append('notes', orderData.customerInfo.notes || '');
+      params.append('paymentMethod', orderData.customerInfo.paymentMethod);
+      params.append('orderTotal', orderData.orderTotal.toString());
+      params.append('status', orderData.status);
+      
+      // Ajouter les articles sous forme de texte lisible
+      const itemsText = orderData.items.map((item: any) => 
+        `${item.productName} (x${item.quantity}) - ${item.totalPrice} DA`
+      ).join('; ');
+      params.append('items', itemsText);
+      
+      const response = await fetch(GOOGLE_SCRIPT_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: params.toString()
+      });
+      
+      // Vérifier si la requête a réussi
+      if (!response.ok) {
+        throw new Error(`Erreur HTTP: ${response.status}`);
+      }
+      
+      const result = await response.text();
+      console.log('Réponse du serveur:', result);
+      
+      return true;
+    } catch (error) {
+      console.error('Erreur lors de l\'envoi vers Google Sheet:', error);
+      throw error;
+    }
+  };
+  
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setSubmitError('');
     
-    // Simulate API call
-    setTimeout(() => {
-      // Generate order number
+    try {
+      // Générer le numéro de commande
       const randomOrderNumber = 'YM' + Math.floor(10000 + Math.random() * 90000).toString();
+      
+      // Préparer les données de commande pour Google Sheet
+      const orderData = {
+        orderNumber: randomOrderNumber,
+        timestamp: new Date().toLocaleString('fr-FR', { 
+          timeZone: 'Africa/Algiers',
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit'
+        }),
+        customerInfo: {
+          firstName: formState.firstName,
+          lastName: formState.lastName,
+          email: formState.email,
+          phone: formState.phone,
+          address: formState.address,
+          city: formState.city,
+          wilaya: formState.wilaya,
+          notes: formState.notes,
+          paymentMethod: formState.paymentMethod
+        },
+        items: cartItems.map(item => ({
+          productId: item.product.id,
+          productName: item.product.name,
+          quantity: item.quantity,
+          unitPrice: item.product.price,
+          totalPrice: item.product.price * item.quantity
+        })),
+        orderTotal: cartTotal,
+        status: 'En attente'
+      };
+      
+      // Envoyer les données vers Google Sheet
+      await submitOrderToGoogleSheet(orderData);
+      
+      // Si tout s'est bien passé
       setOrderNumber(randomOrderNumber);
       setOrderComplete(true);
       clearCart();
+      
+    } catch (error) {
+      console.error('Erreur lors de la soumission:', error);
+      setSubmitError('Une erreur s\'est produite lors de l\'envoi de votre commande. Veuillez vérifier votre connexion internet et réessayer.');
+    } finally {
       setIsSubmitting(false);
-    }, 2000);
+    }
   };
   
   if (orderComplete) {
@@ -76,58 +171,46 @@ const CheckoutPage = () => {
             <div className="inline-flex items-center justify-center w-16 h-16 bg-success-50 text-success-500 rounded-full mb-4">
               <Check size={32} />
             </div>
-            <h1 className="text-2xl font-semibold text-brown-800 mb-2">Order Confirmed!</h1>
+            <h1 className="text-2xl font-semibold text-brown-800 mb-2">Commande Confirmée!</h1>
             <p className="text-gray-600">
-              Thank you for your order. We've received your request and will process it right away.
+              Merci pour votre commande. Nous avons reçu votre demande et nous la traiterons immédiatement.
             </p>
           </div>
           
           <div className="border border-gray-200 rounded-md p-4 mb-6">
-            <div className="flex justify-between items-center mb-4">
-              <span className="font-medium text-brown-800">Order Number:</span>
-              <span className="text-honey-600 font-semibold">{orderNumber}</span>
-            </div>
-            <div className="border-t border-gray-200 pt-4">
-              <div className="flex justify-between mb-2">
-                <span className="text-gray-600">Order Total:</span>
-                <span className="font-medium">{cartTotal} DA</span>
-              </div>
               <div className="flex justify-between">
-                <span className="text-gray-600">Payment Method:</span>
-                <span className="font-medium">Cash on Delivery</span>
+                <span className="text-gray-600">Mode de paiement:</span>
+                <span className="font-medium">Paiement à la livraison</span>
               </div>
             </div>
           </div>
           
           <div className="mb-8">
-            <h3 className="font-semibold text-brown-800 mb-3">What's Next?</h3>
+            <h3 className="font-semibold text-brown-800 mb-3">Étapes suivantes :</h3>
             <ul className="space-y-2">
+              
               <li className="flex items-start">
                 <span className="bg-honey-100 text-honey-600 rounded-full w-5 h-5 flex items-center justify-center text-xs mr-2 mt-0.5">1</span>
-                <span className="text-gray-600">You'll receive an email confirmation with your order details</span>
+                <span className="text-gray-600">Notre équipe préparera votre commande pour l'expédition</span>
               </li>
               <li className="flex items-start">
                 <span className="bg-honey-100 text-honey-600 rounded-full w-5 h-5 flex items-center justify-center text-xs mr-2 mt-0.5">2</span>
-                <span className="text-gray-600">Our team will prepare your order for shipping</span>
+                <span className="text-gray-600">Vous recevrez un appel pour confirmer l'heure de livraison</span>
               </li>
               <li className="flex items-start">
                 <span className="bg-honey-100 text-honey-600 rounded-full w-5 h-5 flex items-center justify-center text-xs mr-2 mt-0.5">3</span>
-                <span className="text-gray-600">You'll receive a call to confirm delivery time</span>
-              </li>
-              <li className="flex items-start">
-                <span className="bg-honey-100 text-honey-600 rounded-full w-5 h-5 flex items-center justify-center text-xs mr-2 mt-0.5">4</span>
-                <span className="text-gray-600">Pay when your honey arrives at your doorstep!</span>
+                <span className="text-gray-600">Payez quand votre miel arrive à votre porte!</span>
               </li>
             </ul>
           </div>
           
           <div className="text-center">
             <Button variant="primary" size="lg">
-              <Link to="/">Return to Homepage</Link>
+              <Link to="/">Retour à l'accueil</Link>
             </Button>
           </div>
         </div>
-      </div>
+  
     );
   }
   
@@ -136,23 +219,29 @@ const CheckoutPage = () => {
       <div className="mb-6 flex items-center">
         <Link to="/cart" className="flex items-center text-gray-500 hover:text-honey-600 transition-colors">
           <ArrowLeft size={16} className="mr-1" />
-          Back to Cart
+          Retour au panier
         </Link>
       </div>
       
-      <h1 className="text-3xl font-semibold text-brown-800 mb-8">Checkout</h1>
+      <h1 className="text-3xl font-semibold text-brown-800 mb-8">Commande</h1>
+      
+      {submitError && (
+        <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-md">
+          <p className="text-red-600">{submitError}</p>
+        </div>
+      )}
       
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Checkout Form */}
         <div className="lg:col-span-2">
           <div className="bg-white rounded-lg shadow-md p-6">
             <form onSubmit={handleSubmit}>
-              <h2 className="text-xl font-semibold text-brown-800 mb-6">Delivery Information</h2>
+              <h2 className="text-xl font-semibold text-brown-800 mb-6">Informations de livraison</h2>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                 <div>
                   <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-1">
-                    First Name *
+                    Prénom *
                   </label>
                   <input
                     type="text"
@@ -166,7 +255,7 @@ const CheckoutPage = () => {
                 </div>
                 <div>
                   <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-1">
-                    Last Name *
+                    Nom *
                   </label>
                   <input
                     type="text"
@@ -197,7 +286,7 @@ const CheckoutPage = () => {
                 </div>
                 <div>
                   <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">
-                    Phone Number *
+                    Numéro de téléphone *
                   </label>
                   <input
                     type="tel"
@@ -213,7 +302,7 @@ const CheckoutPage = () => {
               
               <div className="mb-6">
                 <label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-1">
-                  Address *
+                  Adresse *
                 </label>
                 <input
                   type="text"
@@ -229,7 +318,7 @@ const CheckoutPage = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                 <div>
                   <label htmlFor="city" className="block text-sm font-medium text-gray-700 mb-1">
-                    City *
+                    Ville *
                   </label>
                   <input
                     type="text"
@@ -253,21 +342,21 @@ const CheckoutPage = () => {
                     className="input"
                     required
                   >
-                    <option value="">Select Wilaya</option>
+                    <option value="">Sélectionner Wilaya</option>
                     <option value="Adrar">Adrar</option>
                     <option value="Chlef">Chlef</option>
                     <option value="Laghouat">Laghouat</option>
                     <option value="Alger">Alger</option>
                     <option value="Oran">Oran</option>
                     <option value="Constantine">Constantine</option>
-                    {/* This would be expanded with all 58 wilayas in a real implementation */}
+                    {/* Vous pouvez étendre cette liste avec les 58 wilayas */}
                   </select>
                 </div>
               </div>
               
               <div className="mb-6">
                 <label htmlFor="notes" className="block text-sm font-medium text-gray-700 mb-1">
-                  Order Notes (Optional)
+                  Notes de commande (Optionnel)
                 </label>
                 <textarea
                   id="notes"
@@ -275,12 +364,12 @@ const CheckoutPage = () => {
                   value={formState.notes}
                   onChange={handleInputChange}
                   className="input h-24"
-                  placeholder="Special instructions for delivery or order"
+                  placeholder="Instructions spéciales pour la livraison ou la commande"
                 ></textarea>
               </div>
               
               <h2 className="text-xl font-semibold text-brown-800 mb-6 pt-4 border-t border-gray-200">
-                Payment Method
+                Mode de paiement
               </h2>
               
               <div className="mb-8">
@@ -296,11 +385,11 @@ const CheckoutPage = () => {
                       className="mr-2"
                     />
                     <label htmlFor="cash-on-delivery" className="font-medium text-brown-800">
-                      Cash on Delivery
+                      Paiement à la livraison
                     </label>
                   </div>
                   <p className="text-sm text-gray-600 mt-2 ml-6">
-                    Pay with cash when your order is delivered to your doorstep.
+                    Payez en espèces à la livraison de votre commande.
                   </p>
                 </div>
               </div>
@@ -312,7 +401,7 @@ const CheckoutPage = () => {
                 fullWidth
                 disabled={isSubmitting}
               >
-                {isSubmitting ? 'Processing...' : 'Place Order'}
+                {isSubmitting ? 'Traitement en cours...' : 'Passer la commande'}
               </Button>
             </form>
           </div>
@@ -321,7 +410,7 @@ const CheckoutPage = () => {
         {/* Order Summary */}
         <div className="lg:col-span-1">
           <div className="bg-white rounded-lg shadow-md p-6 sticky top-32">
-            <h2 className="text-xl font-semibold text-brown-800 mb-6">Order Summary</h2>
+            <h2 className="text-xl font-semibold text-brown-800 mb-6">Résumé de la commande</h2>
             
             <div className="max-h-[300px] overflow-y-auto mb-6">
               {cartItems.map((item) => (
@@ -346,12 +435,12 @@ const CheckoutPage = () => {
             
             <div className="space-y-4 mb-6">
               <div className="flex justify-between">
-                <span className="text-gray-600">Subtotal</span>
+                <span className="text-gray-600">Sous-total</span>
                 <span className="font-medium">{cartTotal} DA</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-gray-600">Shipping</span>
-                <span className="font-medium">Calculated at checkout</span>
+                <span className="text-gray-600">Livraison</span>
+                <span className="font-medium">Calculé à la commande</span>
               </div>
               <div className="border-t border-gray-200 pt-4 flex justify-between">
                 <span className="text-lg font-semibold text-brown-800">Total</span>
@@ -360,9 +449,9 @@ const CheckoutPage = () => {
             </div>
             
             <div className="p-4 bg-cream-100 rounded-md">
-              <h4 className="font-medium text-brown-800 mb-2">Secure Shopping</h4>
+              <h4 className="font-medium text-brown-800 mb-2">Achat sécurisé</h4>
               <p className="text-sm text-gray-600">
-                We protect your payment information using encryption to provide bank-level security.
+                Nous protégeons vos informations de paiement en utilisant un cryptage pour fournir une sécurité de niveau bancaire.
               </p>
             </div>
           </div>
